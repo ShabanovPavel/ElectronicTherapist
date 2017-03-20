@@ -46,6 +46,11 @@ describe('Therapist', () => {
             let question = new Question();
             assert.equal(true, question.yes());
         });
+
+        it('verify that the answer is false', () => {
+            let question = new Question();
+            assert.equal(false, question.no());
+        });
     });
 });
 
