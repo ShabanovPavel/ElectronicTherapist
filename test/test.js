@@ -40,6 +40,13 @@ describe('Therapist', () => {
         });
 
     });
+
+    describe('#Check class Question', () => {
+        it('verify that the answer is true', () => {
+            let question = new Question();
+            assert.equal(true, question.yes());
+        });
+    });
 });
 
 /**
