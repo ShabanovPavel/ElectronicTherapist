@@ -65,7 +65,21 @@ class Main {
  * Класс вопроса
  */
 class Question {
+    /**
+     * Выполняет фиксацию ответа да
+     * @returns {boolean}
+     */
+    yes() {
+        return true;
+    }
 
+    /**
+     * Выполняет фиксацию ответа нет
+     * @returns {boolean}
+     */
+    no() {
+        return false;
+    }
 }
 
 /**
