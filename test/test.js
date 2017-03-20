@@ -21,6 +21,12 @@ describe('TherapistStart', () => {
             assert.ok(new Question());
         });
     });
+
+    describe('#Check class Catalog', () => {
+        it('should return true, if class create ', () => {
+            assert.ok(new Catalog());
+        });
+    });
 });
 
 
