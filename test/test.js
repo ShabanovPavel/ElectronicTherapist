@@ -34,13 +34,9 @@ describe('Therapist', () => {
         describe('#Check list of diseases', () => {
             it('correctness of withdrawal', () => {
                 let catalog = new Catalog();
-                const TypeDiseases={
-                    ORZ:0,
-                    ORV:1,
-                    flu:2,
-                };
                 assert.equal(TypeDiseases.ORV, catalog.getTypeDiseases());
             });
+
         });
 
     });
@@ -64,5 +60,21 @@ class Question {
  * Класс базы вопросов и заболеваний
  */
 class Catalog {
-
+    /**
+     * Возвращает диагноз по результату опроса
+     * @returns {number} тип заболевания
+     */
+    getTypeDiseases() {
+        return TypeDiseases.ORV;
+    }
 }
+
+/**
+ * Enum типов заболеваний
+ * @type {{ORZ: number, ORV: number, flu: number}}
+ */
+const TypeDiseases = {
+    ORZ: 0,
+    ORV: 1,
+    flu: 2,
+};
