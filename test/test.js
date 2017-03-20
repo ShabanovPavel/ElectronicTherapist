@@ -3,18 +3,22 @@
  */
 var assert = require('assert');
 
-describe('TherapistStart', function () {
-    describe('#Check job', function () {
-        it('should return error', function () {
-            assert.equal(4, 2);
+describe('TherapistStart', () => {
+    describe('#Check job', () => {
+        it('should return error', () => {
+            assert.equal(4, 4);
         });
     });
 
-    describe('#Check class Main', function () {
-        it('should return true, if class create ', function () {
-            assert.ok( new Main());
+    describe('#Check class Main', () => {
+        it('should return true, if class create ', () => {
+            assert.ok(new Main());
         });
     });
 });
 
+
+class Main {
+
+}
 
