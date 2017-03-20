@@ -37,3 +37,7 @@ class Main {
 class Question {
 
 }
+
+class Catalog {
+
+}
