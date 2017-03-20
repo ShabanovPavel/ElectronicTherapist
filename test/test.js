@@ -29,15 +29,40 @@ describe('TherapistStart', () => {
     });
 });
 
+describe('Therapist', () => {
+    describe('#Check class Catalog', () => {
+        describe('#Check list of diseases', () => {
+            it('correctness of withdrawal', () => {
+                let catalog = new Catalog();
+                const TypeDiseases={
+                    ORZ:0,
+                    ORV:1,
+                    flu:2,
+                };
+                assert.equal(TypeDiseases.ORV, catalog.getTypeDiseases());
+            });
+        });
 
+    });
+});
+
+/**
+ * Главный класс программы
+ */
 class Main {
 
 }
 
+/**
+ * Класс вопроса
+ */
 class Question {
 
 }
 
+/**
+ * Класс базы вопросов и заболеваний
+ */
 class Catalog {
 
 }
