@@ -6,13 +6,19 @@ var assert = require('assert');
 describe('TherapistStart', () => {
     describe('#Check job', () => {
         it('should return error', () => {
-            assert.equal(4, 4);
+            assert.equal(4, 2);
         });
     });
 
     describe('#Check class Main', () => {
         it('should return true, if class create ', () => {
             assert.ok(new Main());
+        });
+    });
+
+    describe('#Check class Question', () => {
+        it('should return true, if class create ', () => {
+            assert.ok(new Question());
         });
     });
 });
