@@ -53,16 +53,19 @@ describe('Therapist', () => {
             it('check create matrix for links on global matrix', () => {
 
                 let catalog = new Catalog(baseQuestion);
-                assert.equal([], catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ));
+                catalog.addArrayLinks(TypeDiseases.ORZ);
+                assert.equal([].indexOf(0), catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ).indexOf(0));
 
             });
 
-            it('check add Type Diseases in matrix for links on global matrix', () => {
+            it('check create matrix for links on global matrix [0]', () => {
 
                 let catalog = new Catalog(baseQuestion);
-                assert.ok(catalog.setArrayLinks(TypeDiseases.ORV));
+                catalog.addArrayLinks(TypeDiseases.ORZ);
+                assert.equal(0, catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ).indexOf(0));
 
             });
+
         });
     });
 
@@ -132,6 +135,13 @@ class Catalog {
         this.arrayLinksOnQuestion = [];
     }
 
+    /**
+     * Добавляет новый тип заболевания в массив предназначенный для хранения ссылок на вопросы с возможным результатирующим ввиде этого заболевания
+     * @param type {TypeDiseases} тип нового заболевания
+     */
+    addArrayLinks(type){
+        this.arrayLinksOnQuestion[type]=[];
+    }
 
     /**
      * Возвращает диагноз по результату опроса
@@ -149,8 +159,13 @@ class Catalog {
         return this.arrayQuestion;
     }
 
+    /**
+     * Возвращает массив ссылок по типу заболевания
+     * @param type {TypeDiseases} тип заболевания
+     * @returns {*} массив ссылок на вопросы в базе
+     */
     getArrayLinksOnQuestion(type) {
-        return
+        return this.arrayLinksOnQuestion[type];
     }
 }
 
