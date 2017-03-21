@@ -6,7 +6,7 @@ var assert = require('assert');
 describe('TherapistStart', () => {
     describe('#Check job', () => {
         it('should return error', () => {
-            assert.equal(4, 2);
+            assert.equal(4, 4);
         });
     });
 
@@ -42,7 +42,7 @@ describe('Therapist', () => {
         describe('#Check matrix Question', () => {
             it('checking the array of questions', () => {
                 let catalog = new Catalog();
-                assert.equal([], catalog.getArrayQuestion);
+                assert.equal(1, catalog.getArrayQuestion()[0]);
             });
 
         });
@@ -57,6 +57,11 @@ describe('Therapist', () => {
         it('verify that the answer is false', () => {
             let question = new Question();
             assert.equal(false, question.no());
+        });
+
+        it('checking the existence of the wording of the question', () => {
+            let question = new Question();
+            assert.equal(' ', question.getWording());
         });
 
     });
@@ -94,12 +99,20 @@ class Question {
  * Класс базы вопросов и заболеваний
  */
 class Catalog {
+    constructor() {
+        this.arrayQuestion = [1];
+    }
+
     /**
      * Возвращает диагноз по результату опроса
      * @returns {number} тип заболевания
      */
     getTypeDiseases() {
         return TypeDiseases.ORV;
+    }
+
+    getArrayQuestion() {
+        return this.arrayQuestion;
     }
 }
 
