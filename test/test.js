@@ -39,6 +39,13 @@ describe('Therapist', () => {
 
         });
 
+        describe('#Check matrix Question', () => {
+            it('checking the array of questions', () => {
+                let catalog = new Catalog();
+                assert.equal([], catalog.getArrayQuestion);
+            });
+
+        });
     });
 
     describe('#Check class Question', () => {
@@ -51,6 +58,7 @@ describe('Therapist', () => {
             let question = new Question();
             assert.equal(false, question.no());
         });
+
     });
 });
 
