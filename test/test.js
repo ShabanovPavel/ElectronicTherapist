@@ -44,48 +44,60 @@ describe('Therapist', () => {
                 let catalog = new Catalog();
                 assert.equal(1, catalog.getArrayQuestion()[0]);
             });
+        });
 
+        describe('#Check constructor Catalog', () => {
+            it('create a global catalog of questions', () => {
+                const baseQuestion = [
+                    {
+                        wording: 'У вас есть температура?',
+                        yes: [
+                            TypeDiseases.ORV
+                        ],
+                        no: [
+                            TypeDiseases.ORZ
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть насморк?',
+                        yes: [
+                            TypeDiseases.ORZ
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                ];
+                let catalog = new Catalog(baseQuestion);
+                let obj=baseQuestion[0];
+                assert.equal(obj.wording, catalog.getArrayQuestion()[0].wording);
+                assert.equal(obj.yes, catalog.getArrayQuestion()[0].yes);
+                assert.equal(obj.no, catalog.getArrayQuestion()[0].no);
+            });
         });
     });
 
     describe('#Check class Question', () => {
-        it('checking the existence of the wording of the question', () => {
-            let question = new Question();
-            assert.equal(' ', question.getWording());
-        });
-
-        it('сhecking the wording of the question', () => {
-            let question = new Question();
-            assert.ok(question.wording);
-        });
-
-        it('checking TypeDiseases according to the answer to yes', () => {
-            let question = new Question();
-            assert.equal(TypeDiseases.ORZ, question.yes());
-        });
-
-        it('checking TypeDiseases according to the answer to no', () => {
-            let question = new Question();
-            assert.equal(TypeDiseases.flu, question.no());
-        });
 
         it('checking wording constructor', () => {
-            let wording='Вы испытываете головную боль';
+            let wording = 'Вы испытываете головную боль';
             let question = new Question(wording);
             assert.equal(wording, question.wording);
         });
 
         it('checking answerYes constructor', () => {
-            let yes=[TypeDiseases.ORZ,TypeDiseases.ORV];
-            let question = new Question(yes);
+            let yes = [TypeDiseases.ORZ, TypeDiseases.ORV];
+            let question = new Question(null, yes);
             assert.equal(yes, question.answerYes);
         });
 
         it('checking answerNo constructor', () => {
-            let no=[TypeDiseases.flu];
-            let question = new Question(no);
+            let no = [TypeDiseases.flu];
+            let question = new Question(null, null, no);
             assert.equal(no, question.answerNo);
         });
+
+
     });
 });
 
@@ -101,10 +113,16 @@ class Main {
  */
 class Question {
 
-    constructor() {
-        this.wording = ' ';
-        this.answerYes = TypeDiseases.ORZ;
-        this.answerNo = TypeDiseases.flu;
+    /**
+     * Constructor of the Question
+     * @param wording {string} формулировка вопроса
+     * @param answerYes {Array<TypeDiseases>} массив заболеваний которые подозреваются при ответе на вопрос ответом да
+     * @param answerNo {Array<TypeDiseases>} массив заболеваний которые подозреваются при ответе на вопрос ответом нет
+     */
+    constructor(wording, answerYes, answerNo) {
+        this.wording = wording;
+        this.answerYes = answerYes;
+        this.answerNo = answerNo;
     }
 
     /**
@@ -136,6 +154,9 @@ class Question {
  * Класс базы вопросов и заболеваний
  */
 class Catalog {
+    /**
+     * Constructor of the Catalog
+     */
     constructor() {
         this.arrayQuestion = [1];
     }
