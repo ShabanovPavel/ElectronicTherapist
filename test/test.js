@@ -68,6 +68,16 @@ describe('Therapist', () => {
             let question = new Question();
             assert.ok(question.wording);
         });
+
+        it('checking TypeDiseases according to the answer to yes', () => {
+            let question = new Question();
+            assert.equal(TypeDiseases.ORZ, question.yes());
+        });
+
+        it('checking TypeDiseases according to the answer to no', () => {
+            let question = new Question();
+            assert.equal(TypeDiseases.flu, question.no());
+        });
     });
 });
 
@@ -82,6 +92,10 @@ class Main {
  * Класс вопроса
  */
 class Question {
+
+    constructor() {
+        this.wording = ' ';
+    }
 
     /**
      * Выполняет фиксацию ответа да
@@ -104,7 +118,7 @@ class Question {
      * @return {string}
      */
     getWording() {
-        return ' ';
+        return this.wording;
     }
 }
 
