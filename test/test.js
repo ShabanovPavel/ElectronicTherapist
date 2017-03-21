@@ -64,6 +64,10 @@ describe('Therapist', () => {
             assert.equal(' ', question.getWording());
         });
 
+        it('сhecking the wording of the question', () => {
+            let question = new Question();
+            assert.ok(question.wording);
+        });
     });
 });
 
@@ -78,6 +82,7 @@ class Main {
  * Класс вопроса
  */
 class Question {
+
     /**
      * Выполняет фиксацию ответа да
      * @returns {boolean}
@@ -92,6 +97,14 @@ class Question {
      */
     no() {
         return false;
+    }
+
+    /**
+     * Возвращает формулировку вопроса
+     * @return {string}
+     */
+    getWording() {
+        return ' ';
     }
 }
 
@@ -111,6 +124,10 @@ class Catalog {
         return TypeDiseases.ORV;
     }
 
+    /**
+     * Возвращет массив вопросов
+     * @returns {Array|[number]}
+     */
     getArrayQuestion() {
         return this.arrayQuestion;
     }
