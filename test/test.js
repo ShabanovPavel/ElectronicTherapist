@@ -56,6 +56,13 @@ describe('Therapist', () => {
                 assert.equal([], catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ));
 
             });
+
+            it('check add Type Diseases in matrix for links on global matrix', () => {
+
+                let catalog = new Catalog(baseQuestion);
+                assert.ok(catalog.setArrayLinks(TypeDiseases.ORV));
+
+            });
         });
     });
 
@@ -118,11 +125,13 @@ class Catalog {
      * Constructor of the Catalog
      */
     constructor(baseQuestion) {
-        this.arrayQuestion=[];
+        this.arrayQuestion = [];
         baseQuestion.forEach((item) => {
             this.arrayQuestion.push(new Question(item));
         });
+        this.arrayLinksOnQuestion = [];
     }
+
 
     /**
      * Возвращает диагноз по результату опроса
@@ -138,6 +147,10 @@ class Catalog {
      */
     getArrayQuestion() {
         return this.arrayQuestion;
+    }
+
+    getArrayLinksOnQuestion(type) {
+        return
     }
 }
 
