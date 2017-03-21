@@ -49,16 +49,6 @@ describe('Therapist', () => {
     });
 
     describe('#Check class Question', () => {
-        it('verify that the answer is true', () => {
-            let question = new Question();
-            assert.equal(true, question.yes());
-        });
-
-        it('verify that the answer is false', () => {
-            let question = new Question();
-            assert.equal(false, question.no());
-        });
-
         it('checking the existence of the wording of the question', () => {
             let question = new Question();
             assert.equal(' ', question.getWording());
@@ -78,6 +68,24 @@ describe('Therapist', () => {
             let question = new Question();
             assert.equal(TypeDiseases.flu, question.no());
         });
+
+        it('checking wording constructor', () => {
+            let wording='Вы испытываете головную боль';
+            let question = new Question(wording);
+            assert.equal(wording, question.wording);
+        });
+
+        it('checking answerYes constructor', () => {
+            let yes=[TypeDiseases.ORZ,TypeDiseases.ORV];
+            let question = new Question(yes);
+            assert.equal(yes, question.answerYes);
+        });
+
+        it('checking answerNo constructor', () => {
+            let no=[TypeDiseases.flu];
+            let question = new Question(no);
+            assert.equal(no, question.answerNo);
+        });
     });
 });
 
@@ -95,6 +103,8 @@ class Question {
 
     constructor() {
         this.wording = ' ';
+        this.answerYes = TypeDiseases.ORZ;
+        this.answerNo = TypeDiseases.flu;
     }
 
     /**
@@ -102,7 +112,7 @@ class Question {
      * @returns {boolean}
      */
     yes() {
-        return true;
+        return this.answerYes;
     }
 
     /**
@@ -110,7 +120,7 @@ class Question {
      * @returns {boolean}
      */
     no() {
-        return false;
+        return this.answerNo;
     }
 
     /**
