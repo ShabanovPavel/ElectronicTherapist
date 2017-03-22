@@ -158,7 +158,27 @@ describe('Therapist', () => {
                 let main=new Main();
                 assert.equal(0, main.currentAssumption);
             });
+
         });
+
+        describe('#Verification methods', () => {
+            it('test for issuing a random issue', () => {
+                let main=new Main();
+                let question={
+                    wording: 'У вас есть температура?',
+                    yes: [
+                        TypeDiseases.ORV
+                    ],
+                    no: [
+                        TypeDiseases.ORZ
+                    ]
+                };
+                assert.equal(question, main.getRandomIssue());
+            });
+
+        });
+
+
 
 
     });
@@ -173,7 +193,10 @@ class Main {
         this.arrayDiseases[TypeDiseases.ORV]=0;
         this.arrayDiseases[TypeDiseases.ORZ]=0;
         this.arrayDiseases[TypeDiseases.flu]=0;
+
+        this.currentAssumption=0;
     }
+
 
 }
 
