@@ -31,15 +31,6 @@ describe('TherapistStart', () => {
 
 describe('Therapist', () => {
     describe('#Check class Catalog', () => {
-        describe('#Check list of diseases', () => {
-            it('correctness of withdrawal', () => {
-                let catalog = new Catalog([]);
-                assert.equal(TypeDiseases.ORV, catalog.getTypeDiseases());
-            });
-
-        });
-
-
         describe('#Check constructor Catalog', () => {
             it('create a global catalog of questions', () => {
 
@@ -57,19 +48,113 @@ describe('Therapist', () => {
                 assert.equal([].indexOf(0), catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ).indexOf(0));
 
             });
+        });
 
-            it('check create matrix for links on global matrix [0]', () => {
+        it('check create matrix for links on global matrix [0]', () => {
 
-                let catalog = new Catalog(baseQuestion);
-                catalog.addArrayLinks(TypeDiseases.ORZ);
-                assert.equal(0, catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ).indexOf(0));
+            let catalog = new Catalog(baseQuestion);
+            catalog.addArrayLinks(TypeDiseases.ORZ);
+            assert.equal(new Question(baseQuestion[0]).wording, catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ)[0].wording);
+        });
 
-            });
+        it('check for duplication of information in the reference array for ORZ', () => {
+            let basa = [
+                {
+                    wording: 'У вас есть температура?',
+                    yes: [
+                        TypeDiseases.ORV
+                    ],
+                    no: [
+                        TypeDiseases.ORZ
+                    ]
+                },
+                {
+                    wording: 'У вас есть насморк?',
+                    yes: [
+                        TypeDiseases.flu
+                    ],
+                    no: [
+                        TypeDiseases.ORV
+                    ]
+                },
+                {
+                    wording: 'Першит в горле?',
+                    yes: [
+                        TypeDiseases.flu
+                    ],
+                    no: [
+                        TypeDiseases.ORV
+                    ]
+                },
+                {
+                    wording: 'Вас тошнит?',
+                    yes: [
+                        TypeDiseases.flu
+                    ],
+                    no: [
+                        TypeDiseases.ORZ
+                    ]
+                },
+            ];
+            let catalog = new Catalog(basa);
+            catalog.addArrayLinks(TypeDiseases.ORZ);
+            assert.equal(2, catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ).length);
+        });
 
+        it('check for duplication of information in the reference array for flu', () => {
+            let basa = [
+                {
+                    wording: 'У вас есть температура?',
+                    yes: [
+                        TypeDiseases.ORV
+                    ],
+                    no: [
+                        TypeDiseases.ORZ
+                    ]
+                },
+                {
+                    wording: 'У вас есть насморк?',
+                    yes: [
+                        TypeDiseases.flu
+                    ],
+                    no: [
+                        TypeDiseases.ORV
+                    ]
+                },
+                {
+                    wording: 'Першит в горле?',
+                    yes: [
+                        TypeDiseases.flu
+                    ],
+                    no: [
+                        TypeDiseases.ORV
+                    ]
+                },
+                {
+                    wording: 'Вас тошнит?',
+                    yes: [
+                        TypeDiseases.flu
+                    ],
+                    no: [
+                        TypeDiseases.ORZ
+                    ]
+                },
+            ];
+            let catalog = new Catalog(basa);
+
+            catalog.addArrayLinks(TypeDiseases.flu);
+            assert.equal(3, catalog.getArrayLinksOnQuestion(TypeDiseases.flu).length);
         });
     });
 
-
+    describe('#Check class Main', () => {
+        describe('#Check the array of answers', () => {
+            it('initial array initialization check', () => {
+                let main=new Main();
+                assert.equal(TypeDiseases.flu+1, main.arrayDiseases.length);
+            });
+        });
+    });
 });
 
 /**
@@ -139,17 +224,22 @@ class Catalog {
      * Добавляет новый тип заболевания в массив предназначенный для хранения ссылок на вопросы с возможным результатирующим ввиде этого заболевания
      * @param type {TypeDiseases} тип нового заболевания
      */
-    addArrayLinks(type){
-        this.arrayLinksOnQuestion[type]=[];
+    addArrayLinks(type) {
+        this.arrayLinksOnQuestion[type] = [];
+        this.arrayQuestion.forEach((item) => {
+            item.answerYes.forEach((itemType) => {
+                if (type === itemType && !this.arrayLinksOnQuestion[type].includes(item)) {
+                    this.arrayLinksOnQuestion[type].push(item);
+                }
+            });
+            item.answerNo.forEach((itemType) => {
+                if (type === itemType && !this.arrayLinksOnQuestion[type].includes(item)) {
+                    this.arrayLinksOnQuestion[type].push(item);
+                }
+            });
+        });
     }
 
-    /**
-     * Возвращает диагноз по результату опроса
-     * @returns {number} тип заболевания
-     */
-    getTypeDiseases() {
-        return TypeDiseases.ORV;
-    }
 
     /**
      * Возвращет массив вопросов
@@ -196,10 +286,28 @@ const baseQuestion = [
     {
         wording: 'У вас есть насморк?',
         yes: [
-            TypeDiseases.ORZ
+            TypeDiseases.flu
         ],
         no: [
             TypeDiseases.ORV
+        ]
+    },
+    {
+        wording: 'Першит в горле?',
+        yes: [
+            TypeDiseases.flu
+        ],
+        no: [
+            TypeDiseases.ORV
+        ]
+    },
+    {
+        wording: 'Вас тошнит?',
+        yes: [
+            TypeDiseases.flu
+        ],
+        no: [
+            TypeDiseases.ORZ
         ]
     },
 ];
