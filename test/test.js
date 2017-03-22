@@ -162,26 +162,59 @@ describe('Therapist', () => {
         });
 
         describe('#Verification methods', () => {
-            it('test for issuing a random issue', () => {
-                let main = new Main();
-                assert.ok(main.getRandomIssue());
-            });
 
             it('test for issuing', () => {
                 let main = new Main();
                 assert.ok(main.getIssue());
             });
 
-            it('test for add Diseases', () => {
+            it('test for add Diseases[]', () => {
                 let main = new Main();
                 let q = [TypeDiseases.ORV, TypeDiseases.ORZ];
 
                 main.addDiseases(q);
                 assert.equal(1, main.arrayDiseases[TypeDiseases.ORZ]);
             });
+
+            it('test for add Diseases', () => {
+                let main = new Main();
+                let q = [TypeDiseases.ORZ];
+
+                main.addDiseases(q);
+                assert.equal(1, main.arrayDiseases[TypeDiseases.ORZ]);
+            });
+
+            it('checking the correctness of the choice of the question after answering the initial question', () => {
+                let basa = [
+                    {
+                        wording: 'У вас есть насморк?',
+                        yes: [
+                            TypeDiseases.flu,
+                            TypeDiseases.ORZ,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть тошнота?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                ];
+                let main = new Main(basa);
+                let question = main.catalog.arrayQuestion[0];
+                let q = question.yes();
+
+                main.addDiseases(q);
+                main.getIssue().wording;
+                assert.equal(basa[1].wording, main.getIssue().wording);
+            });
         });
-
-
     });
 });
 
@@ -189,15 +222,15 @@ describe('Therapist', () => {
  * Главный класс программы
  */
 class Main {
-    constructor() {
+    constructor(basa) {
         this.arrayDiseases = [];
         this.arrayDiseases[TypeDiseases.ORV] = 0;
         this.arrayDiseases[TypeDiseases.ORZ] = 0;
         this.arrayDiseases[TypeDiseases.flu] = 0;
 
         this.currentAssumption = 0;
-
-        this.catalog = new Catalog(baseQuestion);
+        let base=basa||baseQuestion;
+        this.catalog = new Catalog(base);
     }
 
     getRandomIssue() {
@@ -209,10 +242,14 @@ class Main {
     }
 
     getIssue() {
+
         return true;
     }
 
-    addDiseases() {
+    addDiseases(arrayType) {
+        arrayType.forEach((item) => {
+            this.arrayDiseases[item]++;
+        });
         return true;
     }
 }
@@ -330,7 +367,8 @@ const baseQuestion = [
     {
         wording: 'У вас есть температура?',
         yes: [
-            TypeDiseases.ORV
+            TypeDiseases.ORV,
+            TypeDiseases.ORZ,
         ],
         no: [
             TypeDiseases.ORZ
@@ -339,28 +377,11 @@ const baseQuestion = [
     {
         wording: 'У вас есть насморк?',
         yes: [
-            TypeDiseases.flu
+            TypeDiseases.flu,
+            TypeDiseases.ORZ,
         ],
         no: [
             TypeDiseases.ORV
-        ]
-    },
-    {
-        wording: 'Першит в горле?',
-        yes: [
-            TypeDiseases.flu
-        ],
-        no: [
-            TypeDiseases.ORV
-        ]
-    },
-    {
-        wording: 'Вас тошнит?',
-        yes: [
-            TypeDiseases.flu
-        ],
-        no: [
-            TypeDiseases.ORZ
         ]
     },
 ];
