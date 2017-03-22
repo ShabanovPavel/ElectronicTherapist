@@ -150,12 +150,12 @@ describe('Therapist', () => {
     describe('#Check class Main', () => {
         describe('#Check the array of answers', () => {
             it('initial array initialization check', () => {
-                let main=new Main();
+                let main = new Main();
                 assert.equal(3, main.arrayDiseases.length);
             });
 
             it('initialization check current assumption', () => {
-                let main=new Main();
+                let main = new Main();
                 assert.equal(0, main.currentAssumption);
             });
 
@@ -163,22 +163,23 @@ describe('Therapist', () => {
 
         describe('#Verification methods', () => {
             it('test for issuing a random issue', () => {
-                let main=new Main();
+                let main = new Main();
                 assert.ok(main.getRandomIssue());
             });
 
             it('test for issuing', () => {
-                let main=new Main();
+                let main = new Main();
                 assert.ok(main.getIssue());
             });
 
             it('test for add Diseases', () => {
-                let main=new Main();
-                assert.ok(main.addDiseases());
+                let main = new Main();
+                let q = [TypeDiseases.ORV, TypeDiseases.ORZ];
+
+                main.addDiseases(q);
+                assert.equal(1, main.arrayDiseases[TypeDiseases.ORZ]);
             });
         });
-
-
 
 
     });
@@ -188,26 +189,32 @@ describe('Therapist', () => {
  * Главный класс программы
  */
 class Main {
-    constructor(){
-        this.arrayDiseases=[];
-        this.arrayDiseases[TypeDiseases.ORV]=0;
-        this.arrayDiseases[TypeDiseases.ORZ]=0;
-        this.arrayDiseases[TypeDiseases.flu]=0;
+    constructor() {
+        this.arrayDiseases = [];
+        this.arrayDiseases[TypeDiseases.ORV] = 0;
+        this.arrayDiseases[TypeDiseases.ORZ] = 0;
+        this.arrayDiseases[TypeDiseases.flu] = 0;
 
-        this.currentAssumption=0;
+        this.currentAssumption = 0;
 
-        this.catalog=new Catalog(baseQuestion);
+        this.catalog = new Catalog(baseQuestion);
     }
 
-    getRandomIssue(){
-        let min=0;
-        let max=this.catalog.arrayQuestion.length;
-        let index=Math.floor(Math.random() * (max - min + 1)) + min;
+    getRandomIssue() {
+        let min = 0;
+        let max = this.catalog.arrayQuestion.length;
+        let index = Math.floor(Math.random() * (max - min + 1)) + min;
 
         return this.catalog.arrayQuestion[index];
     }
 
+    getIssue() {
+        return true;
+    }
 
+    addDiseases() {
+        return true;
+    }
 }
 
 /**
@@ -258,9 +265,9 @@ class Catalog {
     /**
      * Constructor of the Catalog
      */
-    constructor(baseQuestion) {
+    constructor(base) {
         this.arrayQuestion = [];
-        baseQuestion.forEach((item) => {
+        base.forEach((item) => {
             this.arrayQuestion.push(new Question(item));
         });
         this.arrayLinksOnQuestion = [];
