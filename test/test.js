@@ -164,18 +164,18 @@ describe('Therapist', () => {
         describe('#Verification methods', () => {
             it('test for issuing a random issue', () => {
                 let main=new Main();
-                let question={
-                    wording: 'У вас есть температура?',
-                    yes: [
-                        TypeDiseases.ORV
-                    ],
-                    no: [
-                        TypeDiseases.ORZ
-                    ]
-                };
-                assert.equal(question, main.getRandomIssue());
+                assert.ok(main.getRandomIssue());
             });
 
+            it('test for issuing', () => {
+                let main=new Main();
+                assert.ok(main.getIssue());
+            });
+
+            it('test for add Diseases', () => {
+                let main=new Main();
+                assert.ok(main.addDiseases());
+            });
         });
 
 
@@ -195,6 +195,16 @@ class Main {
         this.arrayDiseases[TypeDiseases.flu]=0;
 
         this.currentAssumption=0;
+
+        this.catalog=new Catalog(baseQuestion);
+    }
+
+    getRandomIssue(){
+        let min=0;
+        let max=this.catalog.arrayQuestion.length;
+        let index=Math.floor(Math.random() * (max - min + 1)) + min;
+
+        return this.catalog.arrayQuestion[index];
     }
 
 
