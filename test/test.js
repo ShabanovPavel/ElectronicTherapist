@@ -211,9 +211,40 @@ describe('Therapist', () => {
                 let q = question.yes();
 
                 main.addDiseases(q);
-                main.getIssue().wording;
                 assert.equal(basa[1].wording, main.getIssue().wording);
             });
+
+            it('checking the choice of priority for the question', () => {
+                let basa = [
+                    {
+                        wording: 'У вас есть насморк?',
+                        yes: [
+                            TypeDiseases.flu,
+                            TypeDiseases.ORZ,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть тошнота?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                ];
+                let main = new Main(basa);
+                let question = main.catalog.arrayQuestion[0];
+                let q = question.yes();
+
+                main.addDiseases(q);
+                assert.equal(TypeDiseases.flu, main.calculationDiseasePriority());
+            });
+
+
         });
     });
 });
@@ -228,24 +259,53 @@ class Main {
         this.arrayDiseases[TypeDiseases.ORZ] = 0;
         this.arrayDiseases[TypeDiseases.flu] = 0;
 
-        this.currentAssumption = 0;
-        let base=basa||baseQuestion;
+        this.currentAssumption = 0;//текущий тип приоритета
+
+        let base = basa || baseQuestion;
         this.catalog = new Catalog(base);
     }
 
+    /**
+     * Возвращает рандомныйвопрос не зависящий от гипотиз
+     * @returns {*}
+     */
     getRandomIssue() {
-        let min = 0;
-        let max = this.catalog.arrayQuestion.length;
-        let index = Math.floor(Math.random() * (max - min + 1)) + min;
-
+        let index = this.randomInt(0, this.catalog.arrayQuestion.length);
         return this.catalog.arrayQuestion[index];
     }
 
+    /**
+     * Возвращает осмысленный вопрос по теме гипотезы
+     * @returns {boolean}
+     */
     getIssue() {
+        this.calculationDiseasePriority();
+        return true;
+    }
+
+    /**
+     * Расчет приоритета для определения следующего вопроса
+     */
+    calculationDiseasePriority() {
 
         return true;
     }
 
+    /**
+     * Возвращает рандомноечисло наполуинтервале [min, max)
+     * @param min минимальное допустимое значение
+     * @param max меньшеэтогозначения
+     * @returns {*} рандомное число
+     */
+    randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    /**
+     * Фиксирует намеки на заболевания
+     * @param arrayType {Array<TypeDiseases>} список заболеваний
+     * @returns {boolean}
+     */
     addDiseases(arrayType) {
         arrayType.forEach((item) => {
             this.arrayDiseases[item]++;
