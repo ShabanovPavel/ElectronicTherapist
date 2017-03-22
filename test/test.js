@@ -151,9 +151,16 @@ describe('Therapist', () => {
         describe('#Check the array of answers', () => {
             it('initial array initialization check', () => {
                 let main=new Main();
-                assert.equal(TypeDiseases.flu+1, main.arrayDiseases.length);
+                assert.equal(3, main.arrayDiseases.length);
+            });
+
+            it('initialization check current assumption', () => {
+                let main=new Main();
+                assert.equal(0, main.currentAssumption);
             });
         });
+
+
     });
 });
 
@@ -161,6 +168,12 @@ describe('Therapist', () => {
  * Главный класс программы
  */
 class Main {
+    constructor(){
+        this.arrayDiseases=[];
+        this.arrayDiseases[TypeDiseases.ORV]=0;
+        this.arrayDiseases[TypeDiseases.ORZ]=0;
+        this.arrayDiseases[TypeDiseases.flu]=0;
+    }
 
 }
 
