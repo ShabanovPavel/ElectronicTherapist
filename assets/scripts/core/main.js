@@ -14,12 +14,15 @@ exports.classMain= class Main {
         this.catalog.addArrayLinks(TypeDiseases.ORV);
         this.catalog.addArrayLinks(TypeDiseases.ORZ);
         this.catalog.addArrayLinks(TypeDiseases.flu);
+        this.catalog.addArrayLinks(TypeDiseases.perelom);
+        this.catalog.addArrayLinks(TypeDiseases.angina);
         this.arrayDiseases[TypeDiseases.ORV] = 0;
         this.arrayDiseases[TypeDiseases.ORZ] = 0;
         this.arrayDiseases[TypeDiseases.flu] = 0;
+        this.arrayDiseases[TypeDiseases.perelom] = 0;
+        this.arrayDiseases[TypeDiseases.angina] = 0;
 
         this.currentAssumption = 0;//текущий тип приоритета
-
         this.stack=[];//массив заданных вопросов
     }
 
@@ -38,7 +41,8 @@ exports.classMain= class Main {
      */
     getIssue() {
         let type=this.calculationDiseasePriority();
-        if(this.checkEnd(type)) return null;
+        //if(this.checkEnd(type)) return null;
+
         let mass=this.catalog.getArrayLinksOnQuestion(type).filter((item)=>{
             return !this.stack.includes(item);
         });
@@ -90,7 +94,7 @@ exports.classMain= class Main {
      * Проверяет на преобладание какой-либо гипотезы в 2 раза над ближайшей
      * @param type
      */
-    checkEnd(type){
+   /* checkEnd(type){
         let max=0;
         this.arrayDiseases.forEach((item) => {
             if (max < item&&this.arrayDiseases.indexOf(item)!=type) max = item;
@@ -98,6 +102,6 @@ exports.classMain= class Main {
         let vremen=this.arrayDiseases[type]-this.arrayDiseases[max];
 
         return vremen>1+this.arrayDiseases[max];
-    }
-}
+    }*/
+};
 

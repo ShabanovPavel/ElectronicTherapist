@@ -1,12 +1,15 @@
 /**
  * Created by FIRCorp on 23.03.2017.
  */
+
 /**
- * Enum типов заболеваний
- * @type {{ORZ: number, ORV: number, flu: number}}
+ *
+ * @type {{ORZ: number, ORV: number, flu: number, angina: number, perelom: number}}
  */
-exports.TypeDiseases= {
+exports.TypeDiseases = {
     ORZ: 0,
     ORV: 1,
     flu: 2,
+    angina: 3,
+    perelom: 4,
 };
