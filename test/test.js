@@ -220,9 +220,11 @@ describe('Therapist', () => {
                 let question = main.catalog.arrayQuestion[0];
                 let q = question.yes();
                 main.addDiseases(q);
+                main.addQuestion(question);
                 question = main.catalog.arrayQuestion[1];
                 q = question.yes();
                 main.addDiseases(q);
+                main.addQuestion(question);
 
                 assert.equal(basa[2].wording, main.getIssue().wording);
             });
@@ -263,7 +265,6 @@ describe('Therapist', () => {
                         wording: 'У вас есть насморк?',
                         yes: [
                             TypeDiseases.flu,
-                            TypeDiseases.ORZ,
                         ],
                         no: [
                             TypeDiseases.ORV
@@ -281,7 +282,7 @@ describe('Therapist', () => {
                 ];
                 let main = new Main(basa);
                 let question = main.catalog.arrayQuestion[0];
-                let q = question.no();
+                let q = question.yes();
 
                 main.addDiseases(q);
                 assert.equal(TypeDiseases.flu, main.calculationDiseasePriority());
@@ -331,9 +332,50 @@ describe('Therapist', () => {
                 let type=main.calculationDiseasePriority();
                 let masQuestion= main.catalog.getArrayLinksOnQuestion(type);
                 let mass=masQuestion.filter((item)=>{
-                    return main.stack.includes(item);
+                    return !main.stack.includes(item);
                 });
                 assert.equal(1,mass.length);
+            });
+
+            it('проверка фиксации отвеченных вопросов', ()=>{
+                let basa = [
+                    {
+                        wording: 'У вас есть насморк?',
+                        yes: [
+                            TypeDiseases.flu,
+                            TypeDiseases.ORZ,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть тошнота?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть ощущение рвоты?',
+                        yes: [
+                            TypeDiseases.flu,
+                            TypeDiseases.ORV,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                ];
+                let main = new Main(basa);
+                let question = main.catalog.arrayQuestion[0];
+                let q = question.yes();
+                main.addDiseases(q);
+                main.addQuestion(question);
+
+                assert.equal(1,main.stack.length);
             });
         });
     });
@@ -344,20 +386,19 @@ describe('Therapist', () => {
  */
 class Main {
     constructor(basa) {
+        let base = basa || baseQuestion;
+        this.catalog = new Catalog(base);
         this.arrayDiseases = [];
+        this.catalog.addArrayLinks(TypeDiseases.ORV);
+        this.catalog.addArrayLinks(TypeDiseases.ORZ);
+        this.catalog.addArrayLinks(TypeDiseases.flu);
         this.arrayDiseases[TypeDiseases.ORV] = 0;
         this.arrayDiseases[TypeDiseases.ORZ] = 0;
         this.arrayDiseases[TypeDiseases.flu] = 0;
 
-
         this.currentAssumption = 0;//текущий тип приоритета
 
         this.stack=[];//массив заданных вопросов
-        let base = basa || baseQuestion;
-        this.catalog = new Catalog(base);
-        this.catalog.addArrayLinks(TypeDiseases.ORV);
-        this.catalog.addArrayLinks(TypeDiseases.ORZ);
-        this.catalog.addArrayLinks(TypeDiseases.flu);
     }
 
     /**
@@ -375,10 +416,10 @@ class Main {
      */
     getIssue() {
         let type=this.calculationDiseasePriority();
-        this.catalog.getArrayLinksOnQuestion(type).filter((item)=>{
-
+        let mass=this.catalog.getArrayLinksOnQuestion(type).filter((item)=>{
+            return !this.stack.includes(item);
         });
-        return true;
+        return mass.length>0? mass[0]:null;
     }
 
     /**
@@ -413,6 +454,8 @@ class Main {
         });
         return true;
     }
+
+
 }
 
 /**
@@ -490,7 +533,6 @@ class Catalog {
             });
         });
     }
-
 
     /**
      * Возвращет массив вопросов
