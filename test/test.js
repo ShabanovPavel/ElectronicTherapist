@@ -214,7 +214,7 @@ describe('Therapist', () => {
                 assert.equal(basa[1].wording, main.getIssue().wording);
             });
 
-            it('checking the choice of priority for the question', () => {
+            it('checking the choice of priority for the question ORZ', () => {
                 let basa = [
                     {
                         wording: 'У вас есть насморк?',
@@ -239,6 +239,36 @@ describe('Therapist', () => {
                 let main = new Main(basa);
                 let question = main.catalog.arrayQuestion[0];
                 let q = question.yes();
+
+                main.addDiseases(q);
+                assert.equal(TypeDiseases.ORZ, main.calculationDiseasePriority());
+            });
+
+            it('checking the choice of priority for the question Flu', () => {
+                let basa = [
+                    {
+                        wording: 'У вас есть насморк?',
+                        yes: [
+                            TypeDiseases.flu,
+                            TypeDiseases.ORZ,
+                        ],
+                        no: [
+                            TypeDiseases.flu,
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть тошнота?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV,
+                        ]
+                    },
+                ];
+                let main = new Main(basa);
+                let question = main.catalog.arrayQuestion[0];
+                let q = question.no();
 
                 main.addDiseases(q);
                 assert.equal(TypeDiseases.flu, main.calculationDiseasePriority());
@@ -287,8 +317,11 @@ class Main {
      * Расчет приоритета для определения следующего вопроса
      */
     calculationDiseasePriority() {
-
-        return true;
+        let max = 0;
+        this.arrayDiseases.forEach((item) => {
+            if (max < item) max = item;
+        });
+        return this.arrayDiseases.indexOf(max);
     }
 
     /**
