@@ -377,6 +377,101 @@ describe('Therapist', () => {
 
                 assert.equal(1,main.stack.length);
             });
+
+            it('проверка завершения теста по окончанию вопросов в базе',()=>{
+                let basa = [
+                    {
+                        wording: 'У вас есть насморк?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть тошнота?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть ощущение рвоты?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                ];
+                let main = new Main(basa);
+
+                let question = main.getRandomIssue();
+                let q = question.yes();
+                main.addDiseases(q);
+                main.addQuestion(question);
+
+                question = main.getIssue();
+                q = question.yes();
+                main.addDiseases(q);
+                main.addQuestion(question);
+
+                question = main.getIssue();
+                q = question.yes();
+                main.addDiseases(q);
+                main.addQuestion(question);
+
+                assert.equal(null,main.getIssue());
+            });
+
+            it('проверка завершения теста по преобладанию одной из гипотез в 2 раза над ближайшей',()=>{
+                let basa = [
+                    {
+                        wording: 'У вас есть насморк?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть тошнота?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть ощущение рвоты?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                ];
+                let main = new Main(basa);
+
+                let question = main.getRandomIssue();
+                let q = question.yes();
+                main.addDiseases(q);
+                main.addQuestion(question);
+
+                question = main.getIssue();
+                q = question.yes();
+                main.addDiseases(q);
+                main.addQuestion(question);
+
+                assert.equal(TypeDiseases.flu,main.getIssue());
+            });
         });
     });
 });
@@ -452,10 +547,17 @@ class Main {
         arrayType.forEach((item) => {
             this.arrayDiseases[item]++;
         });
+
         return true;
     }
 
-
+    /**
+     * Фиксирует вопрос который был уже спрошен
+     * @param question {Question} вопрос
+     */
+    addQuestion(question){
+        this.stack.push(question);
+    }
 }
 
 /**
