@@ -266,7 +266,7 @@ describe('Therapist', () => {
                             TypeDiseases.ORZ,
                         ],
                         no: [
-                            TypeDiseases.flu,
+                            TypeDiseases.ORV
                         ]
                     },
                     {
@@ -275,7 +275,7 @@ describe('Therapist', () => {
                             TypeDiseases.flu,
                         ],
                         no: [
-                            TypeDiseases.ORV,
+                            TypeDiseases.ORV
                         ]
                     },
                 ];
@@ -287,7 +287,54 @@ describe('Therapist', () => {
                 assert.equal(TypeDiseases.flu, main.calculationDiseasePriority());
             });
 
-
+            it('проверка фильтрации массива вопросов по типу гипотезы на основе уже спрошеных', ()=>{
+                let basa = [
+                    {
+                        wording: 'У вас есть насморк?',
+                        yes: [
+                            TypeDiseases.flu,
+                            TypeDiseases.ORZ,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть тошнота?',
+                        yes: [
+                            TypeDiseases.flu,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                    {
+                        wording: 'У вас есть ощущение рвоты?',
+                        yes: [
+                            TypeDiseases.flu,
+                            TypeDiseases.ORV,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
+                ];
+                let main = new Main(basa);
+                let question = main.catalog.arrayQuestion[0];
+                let q = question.yes();
+                main.addDiseases(q);
+                main.addQuestion(question);
+                question = main.catalog.arrayQuestion[1];
+                q = question.yes();
+                main.addDiseases(q);
+                main.addQuestion(question);
+                let type=main.calculationDiseasePriority();
+                let masQuestion= main.catalog.getArrayLinksOnQuestion(type);
+                let mass=masQuestion.filter((item)=>{
+                    return main.stack.includes(item);
+                });
+                assert.equal(1,mass.length);
+            });
         });
     });
 });
@@ -302,10 +349,15 @@ class Main {
         this.arrayDiseases[TypeDiseases.ORZ] = 0;
         this.arrayDiseases[TypeDiseases.flu] = 0;
 
+
         this.currentAssumption = 0;//текущий тип приоритета
 
+        this.stack=[];//массив заданных вопросов
         let base = basa || baseQuestion;
         this.catalog = new Catalog(base);
+        this.catalog.addArrayLinks(TypeDiseases.ORV);
+        this.catalog.addArrayLinks(TypeDiseases.ORZ);
+        this.catalog.addArrayLinks(TypeDiseases.flu);
     }
 
     /**
@@ -322,7 +374,10 @@ class Main {
      * @returns {boolean}
      */
     getIssue() {
-        this.calculationDiseasePriority();
+        let type=this.calculationDiseasePriority();
+        this.catalog.getArrayLinksOnQuestion(type).filter((item)=>{
+
+        });
         return true;
     }
 
