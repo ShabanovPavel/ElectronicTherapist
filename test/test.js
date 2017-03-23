@@ -3,6 +3,14 @@
  */
 var assert = require('assert');
 
+var Main=require('../assets/scripts/core/main');
+var Question=require('../assets/scripts/core/question');
+var Catalog=require('../assets/scripts/core/catalog');
+var modBaseQuestion=require('../assets/scripts/param/base-question');
+var baseQuestion=modBaseQuestion.baseQuestion;
+var modTypeDiseases=require('../assets/scripts/param/type-diseases');
+var TypeDiseases=modTypeDiseases.TypeDiseases;
+
 describe('TherapistStart', () => {
     describe('#Check job', () => {
         it('should return error', () => {
@@ -12,19 +20,19 @@ describe('TherapistStart', () => {
 
     describe('#Check class Main', () => {
         it('should return true, if class create ', () => {
-            assert.ok(new Main());
+            assert.ok(new Main.classMain([]));
         });
     });
 
     describe('#Check class Question', () => {
         it('should return true, if class create ', () => {
-            assert.ok(new Question({}));
+            assert.ok(new Question.classQuestion({}));
         });
     });
 
     describe('#Check class Catalog', () => {
         it('should return true, if class create ', () => {
-            assert.ok(new Catalog([]));
+            assert.ok(new Catalog.classCatalog([]));
         });
     });
 });
@@ -34,7 +42,7 @@ describe('Therapist', () => {
         describe('#Check constructor Catalog', () => {
             it('create a global catalog of questions', () => {
 
-                let catalog = new Catalog(baseQuestion);
+                let catalog = new Catalog.classCatalog(baseQuestion);
                 let obj = baseQuestion[0];
                 assert.equal(obj.wording, catalog.getArrayQuestion()[0].wording);
                 assert.equal(obj.yes, catalog.getArrayQuestion()[0].answerYes);
@@ -43,7 +51,7 @@ describe('Therapist', () => {
 
             it('check create matrix for links on global matrix', () => {
 
-                let catalog = new Catalog(baseQuestion);
+                let catalog = new Catalog.classCatalog(baseQuestion);
                 catalog.addArrayLinks(TypeDiseases.ORZ);
                 assert.equal([].indexOf(0), catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ).indexOf(0));
 
@@ -52,9 +60,9 @@ describe('Therapist', () => {
 
         it('check create matrix for links on global matrix [0]', () => {
 
-            let catalog = new Catalog(baseQuestion);
+            let catalog = new Catalog.classCatalog(baseQuestion);
             catalog.addArrayLinks(TypeDiseases.ORZ);
-            assert.equal(new Question(baseQuestion[0]).wording, catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ)[0].wording);
+            assert.equal(new Question.classQuestion(baseQuestion[0]).wording, catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ)[0].wording);
         });
 
         it('check for duplication of information in the reference array for ORZ', () => {
@@ -96,7 +104,7 @@ describe('Therapist', () => {
                     ]
                 },
             ];
-            let catalog = new Catalog(basa);
+            let catalog = new Catalog.classCatalog(basa);
             catalog.addArrayLinks(TypeDiseases.ORZ);
             assert.equal(2, catalog.getArrayLinksOnQuestion(TypeDiseases.ORZ).length);
         });
@@ -140,7 +148,7 @@ describe('Therapist', () => {
                     ]
                 },
             ];
-            let catalog = new Catalog(basa);
+            let catalog = new Catalog.classCatalog(basa);
 
             catalog.addArrayLinks(TypeDiseases.flu);
             assert.equal(3, catalog.getArrayLinksOnQuestion(TypeDiseases.flu).length);
@@ -150,12 +158,12 @@ describe('Therapist', () => {
     describe('#Check class Main', () => {
         describe('#Check the array of answers', () => {
             it('initial array initialization check', () => {
-                let main = new Main();
+                let main = new Main.classMain([]);
                 assert.equal(3, main.arrayDiseases.length);
             });
 
             it('initialization check current assumption', () => {
-                let main = new Main();
+                let main = new Main.classMain([]);
                 assert.equal(0, main.currentAssumption);
             });
 
@@ -163,13 +171,8 @@ describe('Therapist', () => {
 
         describe('#Verification methods', () => {
 
-            it('test for issuing', () => {
-                let main = new Main();
-                assert.ok(main.getIssue());
-            });
-
             it('test for add Diseases[]', () => {
-                let main = new Main();
+                let main = new Main.classMain([]);
                 let q = [TypeDiseases.ORV, TypeDiseases.ORZ];
 
                 main.addDiseases(q);
@@ -177,7 +180,7 @@ describe('Therapist', () => {
             });
 
             it('test for add Diseases', () => {
-                let main = new Main();
+                let main = new Main.classMain([]);
                 let q = [TypeDiseases.ORZ];
 
                 main.addDiseases(q);
@@ -189,8 +192,7 @@ describe('Therapist', () => {
                     {
                         wording: 'У вас есть насморк?',
                         yes: [
-                            TypeDiseases.flu,
-                            TypeDiseases.ORZ,
+                            TypeDiseases.flu
                         ],
                         no: [
                             TypeDiseases.ORV
@@ -199,7 +201,7 @@ describe('Therapist', () => {
                     {
                         wording: 'У вас есть тошнота?',
                         yes: [
-                            TypeDiseases.flu,
+                            TypeDiseases.flu
                         ],
                         no: [
                             TypeDiseases.ORV
@@ -208,24 +210,25 @@ describe('Therapist', () => {
                     {
                         wording: 'У вас есть ощущение рвоты?',
                         yes: [
-                            TypeDiseases.flu,
-                            TypeDiseases.ORV,
+                            TypeDiseases.flu
                         ],
                         no: [
                             TypeDiseases.ORV
                         ]
                     },
                 ];
-                let main = new Main(basa);
+                let main = new Main.classMain(basa);
                 let question = main.catalog.arrayQuestion[0];
                 let q = question.yes();
                 main.addDiseases(q);
                 main.addQuestion(question);
-                question = main.catalog.arrayQuestion[1];
-                q = question.yes();
+                 question = main.catalog.arrayQuestion[1];
+                q = question.no();
                 main.addDiseases(q);
                 main.addQuestion(question);
-
+                question = main.catalog.arrayQuestion[2];
+                q = question.yes();
+                main.addDiseases(q);
                 assert.equal(basa[2].wording, main.getIssue().wording);
             });
 
@@ -251,7 +254,7 @@ describe('Therapist', () => {
                         ]
                     },
                 ];
-                let main = new Main(basa);
+                let main = new Main.classMain(basa);
                 let question = main.catalog.arrayQuestion[0];
                 let q = question.yes();
 
@@ -280,7 +283,7 @@ describe('Therapist', () => {
                         ]
                     },
                 ];
-                let main = new Main(basa);
+                let main = new Main.classMain(basa);
                 let question = main.catalog.arrayQuestion[0];
                 let q = question.yes();
 
@@ -320,7 +323,7 @@ describe('Therapist', () => {
                         ]
                     },
                 ];
-                let main = new Main(basa);
+                let main = new Main.classMain(basa);
                 let question = main.catalog.arrayQuestion[0];
                 let q = question.yes();
                 main.addDiseases(q);
@@ -369,7 +372,7 @@ describe('Therapist', () => {
                         ]
                     },
                 ];
-                let main = new Main(basa);
+                let main = new Main.classMain(basa);
                 let question = main.catalog.arrayQuestion[0];
                 let q = question.yes();
                 main.addDiseases(q);
@@ -383,7 +386,7 @@ describe('Therapist', () => {
                     {
                         wording: 'У вас есть насморк?',
                         yes: [
-                            TypeDiseases.flu,
+                            TypeDiseases.flu
                         ],
                         no: [
                             TypeDiseases.ORV
@@ -392,7 +395,7 @@ describe('Therapist', () => {
                     {
                         wording: 'У вас есть тошнота?',
                         yes: [
-                            TypeDiseases.flu,
+                            TypeDiseases.flu
                         ],
                         no: [
                             TypeDiseases.ORV
@@ -401,31 +404,34 @@ describe('Therapist', () => {
                     {
                         wording: 'У вас есть ощущение рвоты?',
                         yes: [
-                            TypeDiseases.flu,
+                            TypeDiseases.flu
                         ],
                         no: [
                             TypeDiseases.ORV
                         ]
                     },
                 ];
-                let main = new Main(basa);
+                let main = new Main.classMain(basa);
 
-                let question = main.getRandomIssue();
-                let q = question.yes();
-                main.addDiseases(q);
-                main.addQuestion(question);
+                setTimeout(()=>{
+                    let question1 = main.getRandomIssue();
+                    let q = question1.yes();
+                    main.addDiseases(q);
+                    main.addQuestion(question1);
 
-                question = main.getIssue();
-                q = question.yes();
-                main.addDiseases(q);
-                main.addQuestion(question);
+                    question1 = main.getIssue();
+                    q = question1.yes();
+                    main.addDiseases(q);
+                    main.addQuestion(question1);
 
-                question = main.getIssue();
-                q = question.yes();
-                main.addDiseases(q);
-                main.addQuestion(question);
+                    question1 = main.getIssue();
+                    q = question1.yes();
+                    main.addDiseases(q);
+                    main.addQuestion(question1);
 
-                assert.equal(null,main.getIssue());
+                    assert.equal(null,main.getIssue());
+                },1000);
+
             });
 
             it('проверка завершения теста по преобладанию одной из гипотез в 2 раза над ближайшей',()=>{
@@ -458,235 +464,24 @@ describe('Therapist', () => {
                         ]
                     },
                 ];
-                let main = new Main(basa);
+                let main = new Main.classMain(basa);
+                setTimeout(()=>{
+                    let question = main.getRandomIssue();
+                    let q = question.yes();
+                    main.addDiseases(q);
+                    main.addQuestion(question);
 
-                let question = main.getRandomIssue();
-                let q = question.yes();
-                main.addDiseases(q);
-                main.addQuestion(question);
+                    question = main.getIssue();
+                    q = question.yes();
+                    main.addDiseases(q);
+                    main.addQuestion(question);
 
-                question = main.getIssue();
-                q = question.yes();
-                main.addDiseases(q);
-                main.addQuestion(question);
+                    assert.equal(TypeDiseases.flu,main.getIssue());
+                },1000);
 
-                assert.equal(TypeDiseases.flu,main.getIssue());
             });
+
+
         });
     });
 });
-
-/**
- * Главный класс программы
- */
-class Main {
-    constructor(basa) {
-        let base = basa || baseQuestion;
-        this.catalog = new Catalog(base);
-        this.arrayDiseases = [];
-        this.catalog.addArrayLinks(TypeDiseases.ORV);
-        this.catalog.addArrayLinks(TypeDiseases.ORZ);
-        this.catalog.addArrayLinks(TypeDiseases.flu);
-        this.arrayDiseases[TypeDiseases.ORV] = 0;
-        this.arrayDiseases[TypeDiseases.ORZ] = 0;
-        this.arrayDiseases[TypeDiseases.flu] = 0;
-
-        this.currentAssumption = 0;//текущий тип приоритета
-
-        this.stack=[];//массив заданных вопросов
-    }
-
-    /**
-     * Возвращает рандомныйвопрос не зависящий от гипотиз
-     * @returns {*}
-     */
-    getRandomIssue() {
-        let index = this.randomInt(0, this.catalog.arrayQuestion.length);
-        return this.catalog.arrayQuestion[index];
-    }
-
-    /**
-     * Возвращает осмысленный вопрос по теме гипотезы
-     * @returns {boolean}
-     */
-    getIssue() {
-        let type=this.calculationDiseasePriority();
-        let mass=this.catalog.getArrayLinksOnQuestion(type).filter((item)=>{
-            return !this.stack.includes(item);
-        });
-        return mass.length>0? mass[0]:null;
-    }
-
-    /**
-     * Расчет приоритета для определения следующего вопроса
-     */
-    calculationDiseasePriority() {
-        let max = 0;
-        this.arrayDiseases.forEach((item) => {
-            if (max < item) max = item;
-        });
-        return this.arrayDiseases.indexOf(max);
-    }
-
-    /**
-     * Возвращает рандомноечисло наполуинтервале [min, max)
-     * @param min минимальное допустимое значение
-     * @param max меньшеэтогозначения
-     * @returns {*} рандомное число
-     */
-    randomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    /**
-     * Фиксирует намеки на заболевания
-     * @param arrayType {Array<TypeDiseases>} список заболеваний
-     * @returns {boolean}
-     */
-    addDiseases(arrayType) {
-        arrayType.forEach((item) => {
-            this.arrayDiseases[item]++;
-        });
-
-        return true;
-    }
-
-    /**
-     * Фиксирует вопрос который был уже спрошен
-     * @param question {Question} вопрос
-     */
-    addQuestion(question){
-        this.stack.push(question);
-    }
-}
-
-/**
- * Класс вопроса
- */
-class Question {
-
-    /**
-     * Constructor of the Question
-     * @param item {{wording: string, yes: Array<TypeDiseases>, no: Array<TypeDiseases>}}
-     */
-    constructor(item) {
-        let {wording, yes, no}=item;
-        this.wording = wording;
-        this.answerYes = yes;
-        this.answerNo = no;
-    }
-
-    /**
-     * Выполняет фиксацию ответа да
-     * @returns {boolean}
-     */
-    yes() {
-        return this.answerYes;
-    }
-
-    /**
-     * Выполняет фиксацию ответа нет
-     * @returns {boolean}
-     */
-    no() {
-        return this.answerNo;
-    }
-
-    /**
-     * Возвращает формулировку вопроса
-     * @return {string}
-     */
-    getWording() {
-        return this.wording;
-    }
-}
-
-/**
- * Класс базы вопросов и заболеваний
- */
-class Catalog {
-    /**
-     * Constructor of the Catalog
-     */
-    constructor(base) {
-        this.arrayQuestion = [];
-        base.forEach((item) => {
-            this.arrayQuestion.push(new Question(item));
-        });
-        this.arrayLinksOnQuestion = [];
-    }
-
-    /**
-     * Добавляет новый тип заболевания в массив предназначенный для хранения ссылок на вопросы с возможным результатирующим ввиде этого заболевания
-     * @param type {TypeDiseases} тип нового заболевания
-     */
-    addArrayLinks(type) {
-        this.arrayLinksOnQuestion[type] = [];
-        this.arrayQuestion.forEach((item) => {
-            item.answerYes.forEach((itemType) => {
-                if (type === itemType && !this.arrayLinksOnQuestion[type].includes(item)) {
-                    this.arrayLinksOnQuestion[type].push(item);
-                }
-            });
-            item.answerNo.forEach((itemType) => {
-                if (type === itemType && !this.arrayLinksOnQuestion[type].includes(item)) {
-                    this.arrayLinksOnQuestion[type].push(item);
-                }
-            });
-        });
-    }
-
-    /**
-     * Возвращет массив вопросов
-     * @returns {Array|[number]}
-     */
-    getArrayQuestion() {
-        return this.arrayQuestion;
-    }
-
-    /**
-     * Возвращает массив ссылок по типу заболевания
-     * @param type {TypeDiseases} тип заболевания
-     * @returns {*} массив ссылок на вопросы в базе
-     */
-    getArrayLinksOnQuestion(type) {
-        return this.arrayLinksOnQuestion[type];
-    }
-}
-
-/**
- * Enum типов заболеваний
- * @type {{ORZ: number, ORV: number, flu: number}}
- */
-const TypeDiseases = {
-    ORZ: 0,
-    ORV: 1,
-    flu: 2,
-};
-
-/**
- * База вопросов
- * @type {[*]}
- */
-const baseQuestion = [
-    {
-        wording: 'У вас есть температура?',
-        yes: [
-            TypeDiseases.ORV,
-            TypeDiseases.ORZ,
-        ],
-        no: [
-            TypeDiseases.ORZ
-        ]
-    },
-    {
-        wording: 'У вас есть насморк?',
-        yes: [
-            TypeDiseases.flu,
-            TypeDiseases.ORZ,
-        ],
-        no: [
-            TypeDiseases.ORV
-        ]
-    },
-];
