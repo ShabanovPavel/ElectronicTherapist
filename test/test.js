@@ -205,13 +205,26 @@ describe('Therapist', () => {
                             TypeDiseases.ORV
                         ]
                     },
+                    {
+                        wording: 'У вас есть ощущение рвоты?',
+                        yes: [
+                            TypeDiseases.flu,
+                            TypeDiseases.ORV,
+                        ],
+                        no: [
+                            TypeDiseases.ORV
+                        ]
+                    },
                 ];
                 let main = new Main(basa);
                 let question = main.catalog.arrayQuestion[0];
                 let q = question.yes();
-
                 main.addDiseases(q);
-                assert.equal(basa[1].wording, main.getIssue().wording);
+                question = main.catalog.arrayQuestion[1];
+                q = question.yes();
+                main.addDiseases(q);
+
+                assert.equal(basa[2].wording, main.getIssue().wording);
             });
 
             it('checking the choice of priority for the question ORZ', () => {
